@@ -142,11 +142,11 @@ $targeting->{TargetingSpecsFields::GEO_LOCATIONS}
 // An adset can have one or more ad units
 
 $adset = new AdSet(null, $account_id);
-$adset->setData(array(
+@$adset->setData(array(
   AdSetFields::NAME => 'My First AdSet',
   AdSetFields::CAMPAIGN_GROUP_ID => $campaign_id,
   AdSetFields::CAMPAIGN_STATUS => AdSet::STATUS_ACTIVE,
-  AdSetFields::DAILY_BUDGET => '5000',
+  AdSetFields::DAILY_BUDGET => $_SESSION[__SESSION_CAMP_EDIT]['step4']['budget']*100,
   AdSetFields::TARGETING => $targeting,
   AdSetFields::BID_TYPE => BidTypes::BID_TYPE_CPM,
   AdSetFields::BID_INFO => array(AdGroupBidInfoFields::IMPRESSIONS => 2),
