@@ -100,6 +100,7 @@ $creative->setData(array(
 $creative->create();
 $creative_id = $creative->id;
 echo 'Creative ID: '.$creative_id ."\n";
+sleep(5);
 
 
 // Create a campaign
@@ -115,6 +116,7 @@ $campaign  = new AdCampaign(null, $account_id);
 $campaign->validate()->create();
 $campaign_id = $campaign->id;
 echo "Campaign ID: " . $campaign_id . "\n";
+sleep(5);
 
 echo "----------------------------\n";
 foreach($_POST['commit_data'] as $cdInfo) {
@@ -126,6 +128,8 @@ foreach($_POST['commit_data'] as $cdInfo) {
     = array(
         'countries' => explode('|', $cdInfo['location'])
     );
+    $targeting->{TargetingSpecsFields::AGE_MIN}=$cdInfo['age_from'];
+    $targeting->{TargetingSpecsFields::AGE_MAX}=$cdInfo['age_to'];
 
     // Create an ad set
     // An adset can have one or more ad units
@@ -161,5 +165,6 @@ foreach($_POST['commit_data'] as $cdInfo) {
     $adgroup_id=$adgroup->id;
     echo 'AdGroup ID: ' . $adgroup_id . "\n";
     /*}}}*/
+    sleep(25);
 }
 
