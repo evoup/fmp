@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Create: 2015-05-11 18:40:23
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-05-11 18:41:29
+  | Last-Modified: 2015-05-15 17:56:07
   +----------------------------------------------------------------------+
  */
 use FacebookAds\Api;
@@ -38,10 +38,48 @@ use FacebookAds\Object\Fields\AdGroupFields;
 Api::init($app_id, $app_secret, $access_token);
 echo $account_id;
 
+print_r($_SESSION);
+print_r($_POST['commit_data']);
 //$page_id = "1568648156711755"; // 普通个人page没有意义
-//$page_id = "463893297084514"; // business page
+// business page
 $page_id=@$_SESSION[__SESSION_CAMP_EDIT]['step5']['selected_page'];
 //$pixel_id = "";
+
+$child_attachments=null;
+switch($_SESSION[__SESSION_CAMP_EDIT]['step1']['objective']) {
+case (__OBJT_MULTI_PRODUCT):
+    $child_attachments=array();
+    $multiProductsInfo=$_SESSION[__SESSION_CAMP_EDIT]['step5']['product_multi'];
+    include(dirname(__FILE__).'/../inc/conn.php');
+    for ($i=0;$i<sizeof($multiProductsInfo);$i++) {
+        $image[$i]=new AdImage(null, $account_id);
+        $tempFile = tmpfile();
+        // 出图
+        $hash=$multiProductsInfo[$i]['product_pic'];
+        $query="select content,mime from t_fmp_material where fmp_hash='{$hash}' limit 1";
+        if ($result=$link->query($query)) {
+            while ($row=mysqli_fetch_assoc($result)) {
+                $content=$row['content'];
+            }
+        }
+        fwrite($tempFile, $content);
+        print_r(fstat($tempFile));
+        die;
+        $image[$i]->{AdImageFields::FILENAME} = $tempFile;
+        $image[$i]->create();
+        echo $image[$i]->hash;
+        die;
+        $child_attachments[$i][AttachmentDataFields::NAME]=$multiProductsInfo[$i]['product_name'];
+        $child_attachments[$i][AttachmentDataFields::DESCRIPTION]=$multiProductsInfo[$i]['product_desc'];
+        $child_attachments[$i][AttachmentDataFields::LINK]=$multiProductsInfo[$i]['product_link'];
+    }
+    break;
+}
+print_r($child_attachments);
+die;
+//foreach($_POST['commit_data'] as $cdInfo) {
+    //print_r($cdInfo);
+//}
 
 // Upload Images
 echo "Uploading Images";

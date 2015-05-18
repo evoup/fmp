@@ -21,8 +21,6 @@ if ($GLOBALS['selector'] == __SELECTOR_SINGLE) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $ret=$access_token=null;
             $ret['status']="true";
-            print_r($_SESSION);
-            print_r($_POST['commit_data']);
             // 获取access token
             include(dirname(__FILE__).'/../inc/conn.php');
             $query="SELECT access_token FROM t_fb_account WHERE ad_account_id=".$_SESSION[__SESSION_CAMP_EDIT]['step1']['billingAccount']." LIMIT 1;";
