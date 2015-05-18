@@ -208,4 +208,24 @@ function getSplitedCampaigns(){
     }
     return $publish_rows;
 }
+
+/**
+ * @brief 从mime类型获取扩展名，仅限图片
+ * @return 
+ */
+function getExtFromMime($mime) {
+    $ext="";
+    switch($mime){
+    case('image/jpeg'):
+        $ext="jpg";
+        break;
+    case('image/gif'):
+        $ext="gif";
+       break;
+    case('image/png'):
+        $ext="png";
+       break;
+    }
+    return $ext;
+}
 ?>

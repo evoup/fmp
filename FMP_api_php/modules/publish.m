@@ -53,58 +53,59 @@ case (__OBJT_MULTI_PRODUCT):
     include(dirname(__FILE__).'/../inc/conn.php');
     for ($i=0;$i<sizeof($multiProductsInfo);$i++) {
         $image[$i]=new AdImage(null, $account_id);
-        $tempFile = tmpfile();
+        $tmpFile=tempnam("/tmp","material_");
         // 出图
         $hash=$multiProductsInfo[$i]['product_pic'];
-        $query="select content,mime from t_fmp_material where fmp_hash='{$hash}' limit 1";
+        $query="select content,mime from t_fmp_material where fmp_hash='{$hash}' limit 1;";
         if ($result=$link->query($query)) {
             while ($row=mysqli_fetch_assoc($result)) {
-                $content=$row['content'];
+                $tmpFile=$tmpFile.'.'.getExtFromMime($row['mime']);
+                file_put_contents($tmpFile,$row['content']);
             }
         }
-        fwrite($tempFile, $content);
-        print_r(fstat($tempFile));
-        die;
-        $image[$i]->{AdImageFields::FILENAME} = $tempFile;
+        // Upload Images
+        $image[$i]->{AdImageFields::FILENAME} = $tmpFile;
         $image[$i]->create();
         echo $image[$i]->hash;
-        die;
+        unlink($tmpFile);
         $child_attachments[$i][AttachmentDataFields::NAME]=$multiProductsInfo[$i]['product_name'];
         $child_attachments[$i][AttachmentDataFields::DESCRIPTION]=$multiProductsInfo[$i]['product_desc'];
         $child_attachments[$i][AttachmentDataFields::LINK]=$multiProductsInfo[$i]['product_link'];
+        $child_attachments[$i][AttachmentDataFields::IMAGE_HASH]=$image[$i]->hash;
     }
     break;
 }
+echo "child_attachments:";
 print_r($child_attachments);
-die;
+//die;
 //foreach($_POST['commit_data'] as $cdInfo) {
     //print_r($cdInfo);
 //}
 
 // Upload Images
-echo "Uploading Images";
+//echo "Uploading Images";
 
-for($i = 1; $i <= 3; $i++) {
-  $image[$i] = new AdImage(null, $account_id);
-  $image[$i]->{AdImageFields::FILENAME} = "/tmp/africa/africa{$i}.jpg";
-  echo ".";
-  $image[$i]->create();
-}
+//for($i = 1; $i <= 3; $i++) {
+  //$image[$i] = new AdImage(null, $account_id);
+  //$image[$i]->{AdImageFields::FILENAME} = "/tmp/africa/africa{$i}.jpg";
+  //echo ".";
+  //$image[$i]->create();
+//}
 
-echo "\n";
+//echo "\n";
 
 // Create Multi Product Ad Creative
 
-$child_attachments = array();
+//$child_attachments = array();
 
-for($i = 1; $i <= 3; $i++) {
-  $child_attachments[] = array(
-    AttachmentDataFields::NAME => 'product'.$i,
-    AttachmentDataFields::DESCRIPTION => '$'.$i.'00',
-    AttachmentDataFields::LINK => 'http://photos.vigyaan.com/africa'.$i,
-    AttachmentDataFields::IMAGE_HASH => $image[$i]->hash
-  );
-}
+//for($i = 1; $i <= 3; $i++) {
+  //$child_attachments[] = array(
+    //AttachmentDataFields::NAME => 'product'.$i,
+    //AttachmentDataFields::DESCRIPTION => '$'.$i.'00',
+    //AttachmentDataFields::LINK => 'http://photos.vigyaan.com/africa'.$i,
+    //AttachmentDataFields::IMAGE_HASH => $image[$i]->hash
+  //);
+//}
 
 // The ObjectStorySpec helps bring some order to a complex
 // API spec that assists with creating page posts inline.
