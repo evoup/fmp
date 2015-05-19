@@ -103,7 +103,7 @@
               async: false,
               success: function(data){
                   if (data.status=="false") { //没有登录退出
-                      location.href="../"
+                      location.href="../redirect/not_login.html"
                   }
                   var user=[{UserName:data.username}]
                   $("#headerTemplate").tmpl(user).appendTo('.header #user_profile_a');
