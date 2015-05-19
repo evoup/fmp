@@ -10,3 +10,4 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 // Uncomment to use Akka
 //libraryDependencies += "com.typesafe.akka" % "akka-actor_2.11" % "2.3.9"
 
+libraryDependencies +=  "mysql" % "mysql-connector-java" % "5.1.29"
