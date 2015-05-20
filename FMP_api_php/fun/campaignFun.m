@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Create:
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-04-16 14:23:01
+  | Last-Modified: 2015-05-20 11:28:12
   +----------------------------------------------------------------------+
  */
 $GLOBALS['httpStatus'] = __HTTPSTATUS_BAD_REQUEST; //默认返回400 
@@ -300,7 +300,7 @@ if ($GLOBALS['selector'] == __SELECTOR_STEP3) {
             $STEP3_SAVE_DATA=array(
                 'name'=>'','age_from'=>0,'age_to'=>0,'age_split'=>0,'age_split_interval'=>0,'gender'=>0,''=>0,'location'=>''
             );
-            //sel_fmptemplate选择，必须id存在且属于当前用户
+            // sel_fmptemplate选择，必须id存在且属于当前用户
             if (!empty($_POST['sel_fmptemplate'])) {
                 include(dirname(__FILE__).'/../inc/conn.php');
                 $query="select count(*) from t_fmp_template where fmp_user_id={$_SESSION[__SESSION_FMP_UID]} and id=".intval($_POST['sel_fmptemplate']).";";
@@ -314,7 +314,7 @@ if ($GLOBALS['selector'] == __SELECTOR_STEP3) {
                 }
                 @mysqli_close($link);
             }
-            //save_template选择，则必须template_name长度不超过30个，且数据库中没有超过20个模板
+            // save_template选择，则必须template_name长度不超过30个，且数据库中没有超过配置的模板数(默认20)
             if (isset($_POST['save_template']) && $_POST['save_template']=='on') {
                 $err_item=null;
                 if (empty($_POST['template_name'])) {
@@ -323,14 +323,18 @@ if ($GLOBALS['selector'] == __SELECTOR_STEP3) {
                     $msgs['err_msg'][]=array('template_name'=>'template name is too long(<30)');
                 } else {
                     include(dirname(__FILE__).'/../inc/conn.php');
-                    $query="select count(*) from t_fmp_template where fmp_user_id={$_SESSION[__SESSION_FMP_UID]} limit 1;";
+                    $query="select name from t_fmp_template where fmp_user_id={$_SESSION[__SESSION_FMP_UID]} limit ".__FMP_MAX_USER_TMPL.";";
                     if ($result=$link->query($query)) {
-                        $row=mysqli_fetch_assoc($result); 
-                        if ($row['count(*)']>__FMP_MAX_USER_TMPL) {
+                        $rows=null;
+                        while($row=mysqli_fetch_assoc($result)){
+                            $rows[]=$row['name'];
+                        }
+                        if ( sizeof($rows)==__FMP_MAX_USER_TMPL && !in_array($_POST['template_name'],$rows) ) {
                             $msgs['err_msg'][]=array('template_name'=>'reaching  max owned '.__FMP_MAX_USER_TMPL.' templates' );
                         } else {
                             $STEP3_SAVE_DATA['name']=$_POST['template_name'];
                         }
+                        unset($rows);
                     }
                     @mysqli_close($link);
                 }
