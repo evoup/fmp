@@ -37,7 +37,7 @@ var gced = {
     tpl_step6: ""
 };
 $.when(
-    // Get the all available ad accounts
+    // 获取全部页面模板数据 
     $.get(baseConf.api_prefix + "/get/campaign/@step1", function(response) {
         gced.adaccounts = response.data
     }),
@@ -289,7 +289,7 @@ function AudienceProcess() {
     }
 
     function bindLocAutoComplete() {
-        //预先载入一个假的自动完成
+        // 预先载入一个假的自动完成
         savedCountries = [];
         $("#fmplocation_autocomplete").wrap("<div class=\"ui-autocomplete-multiselect ui-state-default ui-widget\" id=\"fmp_loc_autocomplete_dummy\"></div>")
         $("#fmp_loc_autocomplete_dummy").bind('click', function() {
@@ -379,6 +379,7 @@ function AudienceProcess() {
     becameSplitter($('#mainSplitter_step3'),660)
 }
 
+// 根据指定的template重载Audience
 function reloadAudienceByTmpl(template_id) {
     $("#ad_edit_area").find("h2:contains('Audience')").remove()
     $("#form_camp_step3").remove()
@@ -771,7 +772,7 @@ var PublishProcess = function() {}
 PublishProcess.commit=function() {
     var t=_.first(window.publish_obj.total_rows)
     var ret=false;
-    // 提交的同步数据准备完毕
+    // 提交的待发布数据准备完毕
     $.ajax({
         url: baseConf.api_prefix + "/get/campaign/@step6?pagesize="+t,
         method: "GET",
