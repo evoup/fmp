@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Created:2011-02-22 10:30:48                                          |
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-05-11 14:07:34
+  | Last-Modified: 2015-05-21 18:09:59
   +----------------------------------------------------------------------+
  */
 
@@ -37,6 +37,11 @@ list($memcache_host,$memcache_port)=isset($conf['memcache_host'])?explode(':',$c
 define('__MEMCACHE_HOST', $memcache_host);
 define('__MEMCACHE_PORT', $memcache_port);
 unset($memcache_host,$memcache_port);
+
+list($redis_host,$redis_port)=isset($conf['redis_host'])?explode(':',$conf['redis_host']):array('localhost',6379);
+define('__REDIS_HOST', $redis_host);
+define('__REDIS_PORT', $redis_port);
+unset($redis_host,$redis_port);
 
 /* {{{ 物料地址 */
 $material_url=isset($conf['material_url'])?$conf['material_url']:$_SERVER['HTTP_HOST'];
@@ -191,20 +196,20 @@ define('__FMP_ERR_COMMIT_MATERIAL_UPLOAD',   10560);
 define('__FMP_ERR_CREATE_MUL_TEMP_TBL',      10561);
 
 
-//日志类型
+// 日志类型
 define('__FMP_LOGTYPE_ERROR',      0); //系统错误日志 
 define('__FMP_LOGTYPE_OPERACTION', 1); //操作日志 
 
-//graph url前缀
+// graph url前缀
 define('__FB_GRAPH', 'https://graph.facebook.com/v2.2');
 
-//session
+// session
 define('__SESSION_FMP_UID', 'fmp_uid');
 define('__SESSION_FMP_USERNAME', 'username');
 define('__SESSION_FB_UID', 'fb_uid');
 define('__SESSION_CAMP_EDIT', 'camp_edit');
 
-//buyingType的种类
+// buyingType的种类
 define('__BYT_CPC', 'cpc');
 define('__BYT_CPM', 'cpm');
 define('__BYT_OCPM','ocpm');
@@ -216,7 +221,7 @@ $BYT_ARR=array(
     __BYT_CPA=>'CPA(Pay for Action)'
 );
 
-//objective的种类
+// objective的种类
 define('__OBJT_MULTI_PRODUCT', 1);
 define('__OBJT_NEWSFEED',      2);
 define('__OBJT_RIGHTCOL',      3);
@@ -227,8 +232,16 @@ $OBJECTIVE_ARR=array(
 );
 
 
+// 任务的种类
+define('__TASK_PUBLISH', 1);  // 发布
 
-//用户能创建最大的模板数目
+// 任务的状态
+define('__TASKSTAT_READY', 1); // 等待执行
+define('__TASKSTAT_EXECUTING', 2); // 执行中
+define('__TASKSTAT_FAIL', 3); // 失败
+define('__TASKSTAT_SUCCESS', 4); // 成功
+
+// 用户能创建最大的模板数目
 define('__FMP_MAX_USER_TMPL', 20);
 
 
@@ -236,7 +249,6 @@ define('__FMP_MAX_USER_TMPL', 20);
 
 // 权限常量
 // 1=无权限 2=读取 3=读取创建 4=读取修改 5=读取创建修改 6=读取创建修改删除
-// ...
 
 
 // 分页的常量
