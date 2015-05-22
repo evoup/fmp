@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Create: 2015-05-11 18:40:23
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-05-15 17:56:07
+  | Last-Modified: 2015-05-22 16:22:16
   +----------------------------------------------------------------------+
  */
 use FacebookAds\Api;
@@ -69,7 +69,8 @@ $task_content=json_encode(array(
     'promote_page'=>$promote_page,
     'messages'=>$messages,
     'link'=>$link,
-    'product_multi'=>$multiProductsInfo
+    'product_multi'=>$multiProductsInfo,
+    'adsets'=>$_POST['commit_data']
 ));
 
 // 检查是否有正在发布中的任务，如果有超过指定数目未发布(目前为3个)的任务，则无法再发布
