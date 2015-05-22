@@ -40,10 +40,81 @@ echo $account_id;
 
 print_r($_SESSION);
 print_r($_POST['commit_data']);
-//$page_id = "1568648156711755"; // 普通个人page没有意义
-// business page
-$page_id=@$_SESSION[__SESSION_CAMP_EDIT]['step5']['selected_page'];
+$publish_task_content="";
+$fmp_uid=$_SESSION[__SESSION_FMP_UID];
+$task_type=__TASK_PUBLISH;
+$task_status=__TASKSTAT_READY;
+$budget=$_SESSION[__SESSION_CAMP_EDIT]['step4']['budget']*100;
+$schedule_start=$_SESSION[__SESSION_CAMP_EDIT]['step4']['schedule_start'];
+$schedule_end=$_SESSION[__SESSION_CAMP_EDIT]['step4']['schedule_end'];
+// promote_page 普通个人page没有意义,需要是business page，且发布广告的帐号要有管理该page的权限
 //$pixel_id = "";
+$promote_page=$_SESSION[__SESSION_CAMP_EDIT]['step5']['selected_page'];
+$messages=$_SESSION[__SESSION_CAMP_EDIT]['step5']['messages'];
+$link=$_SESSION[__SESSION_CAMP_EDIT]['step5']['link'];
+foreach($_SESSION[__SESSION_CAMP_EDIT]['step5']['product_multi'] as $productInfo){
+    unset($productInfo['product_pic_url']); // 图片url信息不用传递 
+    $multiProductsInfo[]=$productInfo;
+}
+
+// TODO per cost
+$task_content=json_encode(array(
+    'objective'=>__OBJT_MULTI_PRODUCT,
+    'fmp_uid'=>$fmp_uid,
+    'budget'=>$budget,
+    'bid_type'=>__BYT_CPC,
+    'per_cost'=>2,
+    'schedule_start'=>$schedule_start,
+    'schedule_end'=>$schedule_end,
+    'promote_page'=>$promote_page,
+    'messages'=>$messages,
+    'link'=>$link,
+    'product_multi'=>$multiProductsInfo
+));
+
+// 检查是否有正在发布中的任务，如果有超过指定数目未发布(目前为3个)的任务，则无法再发布
+$status_ready=__TASKSTAT_READY;
+$check_task_query=<<<EOT
+SELECT count(*) FROM `t_fmp_task`
+    WHERE `fmp_user_id`={$fmp_uid} AND `status`={$status_ready};
+EOT;
+include(dirname(__FILE__).'/../inc/conn.php');
+if ($result=$link->query($check_task_query)) {
+    $row=mysqli_fetch_assoc($result);
+    $max_ready_nums=$row['count(*)'];
+    if($max_ready_nums>__FMP_MAX_READY_PUBLISH_TASKS) {
+        echo "reach max ready publish task nums!\n";
+    } 
+}
+
+$insert_task_query=<<<EOT
+INSERT INTO `t_fmp_task`(fmp_user_id,type,status,content) 
+    VALUES({$fmp_uid},{$task_type},{$task_status},'{$task_content}');
+EOT;
+echo $insert_task_query;
+$task_id=null;
+if ($link->query($insert_task_query)) {
+    $task_id=$link->insert_id;
+} else {
+    addLog(__FMP_LOGTYPE_ERROR,array('run query error'=>$insert_task_query));
+} 
+@mysqli_close($link);
+// 队列生产者，写一个任务
+require __API_ROOT.'/GPLlib/predis-1.0/autoload.php';
+$queue_server = array(
+    'host'     => __REDIS_HOST,
+    'port'     => __REDIS_PORT,
+    'database' => __REDIS_DB_INDEX
+);
+$redis_client = new Predis\Client($queue_server + array('read_write_timeout' => 0));
+$queue_content=json_encode(array(
+    'task_id'=>$task_id,
+    'task_type'=>$task_type,
+    'task_content'=>json_decode($task_content)
+));
+$redis_client->lpush(__REDIS_QUEUE_NAME,$queue_content);
+echo "done";
+die;
 
 $child_attachments=null;
 switch($_SESSION[__SESSION_CAMP_EDIT]['step1']['objective']) {
