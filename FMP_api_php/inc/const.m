@@ -33,17 +33,22 @@ unset($mysql_host,$mysql_port,$mysql_user,$mysql_pass,$mysql_db);
 define('__FACEBOOK_APPID', $conf['app_id']);
 define('__FACEBOOK_SECRET', $conf['app_secret']);
 /*}}}*/
+
+/*{{{ memcached设置*/
 list($memcache_host,$memcache_port)=isset($conf['memcache_host'])?explode(':',$conf['memcache_host']):array('localhost',11211);
 define('__MEMCACHE_HOST', $memcache_host);
 define('__MEMCACHE_PORT', $memcache_port);
 unset($memcache_host,$memcache_port);
+/*}}}*/
 
+/*{{{ redis设置*/
 list($redis_host,$redis_port)=isset($conf['redis_host'])?explode(':',$conf['redis_host']):array('localhost',6379);
 define('__REDIS_HOST', $redis_host);
 define('__REDIS_PORT', $redis_port);
 define('__REDIS_DB_INDEX', 1);
 define('__REDIS_QUEUE_NAME', 'fmp_publish'); // 用来发送发布任务的redis队列的名字 
 unset($redis_host,$redis_port);
+/*}}}*/
 
 /* {{{ 物料地址 */
 $material_url=isset($conf['material_url'])?$conf['material_url']:$_SERVER['HTTP_HOST'];
