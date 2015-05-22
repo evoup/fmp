@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Created:2011-02-22 10:30:48                                          |
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-05-21 18:09:59
+  | Last-Modified: 2015-05-22 15:09:17
   +----------------------------------------------------------------------+
  */
 
@@ -41,6 +41,8 @@ unset($memcache_host,$memcache_port);
 list($redis_host,$redis_port)=isset($conf['redis_host'])?explode(':',$conf['redis_host']):array('localhost',6379);
 define('__REDIS_HOST', $redis_host);
 define('__REDIS_PORT', $redis_port);
+define('__REDIS_DB_INDEX', 1);
+define('__REDIS_QUEUE_NAME', 'fmp_publish'); // 用来发送发布任务的redis队列的名字 
 unset($redis_host,$redis_port);
 
 /* {{{ 物料地址 */
@@ -243,6 +245,9 @@ define('__TASKSTAT_SUCCESS', 4); // 成功
 
 // 用户能创建最大的模板数目
 define('__FMP_MAX_USER_TMPL', 20);
+
+// 最大发布任务数
+define('__FMP_MAX_READY_PUBLISH_TASKS', 3);
 
 
 // 默认用户常量
