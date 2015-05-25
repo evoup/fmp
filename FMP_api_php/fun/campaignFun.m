@@ -9,7 +9,7 @@
   +----------------------------------------------------------------------+
   | Create:
   +----------------------------------------------------------------------+
-  | Last-Modified: 2015-05-20 11:28:12
+  | Last-Modified: 2015-05-25 10:13:23
   +----------------------------------------------------------------------+
  */
 $GLOBALS['httpStatus'] = __HTTPSTATUS_BAD_REQUEST; //默认返回400 
@@ -609,7 +609,7 @@ if ($GLOBALS['selector'] == __SELECTOR_STEP5) {
             // 遍历产品图片，必须设置，而且属于图片必须得是自己创建的
             foreach ($productSeqArr as $sequence_num) {
                 if ( empty($_POST['productHash']["{$sequence_num}"]) ) {
-                    $msgs['err_msg'][]=array("productHash\[{$sequence_num}\]"=>'picture us required');
+                    $msgs['err_msg'][]=array("productHash\[{$sequence_num}\]"=>'picture is required');
                 } elseif(!checkImgHashPerm($_POST['productHash']["{$sequence_num}"])) {
                     $msgs['err_msg'][]=array("productHash\[{$sequence_num}\]"=>'this picture isn`t yours');
                 }
