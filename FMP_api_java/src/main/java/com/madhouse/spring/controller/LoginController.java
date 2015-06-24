@@ -73,14 +73,14 @@ public class LoginController {
 			}*/
 			for (int i = 0; i < businessesData.size(); i++) {
 				System.out.println("business name:"+businessesData.get(i).getName());
-				//±éÀúbusiness
+				//éåŽ†business
 			    String business_id=businessesData.get(i).getId();
 			    System.out.println("business_id:"+business_id);
 			    String qActUrl="https://graph.facebook.com/v2.2/"+business_id+"/adaccounts?access_token="+access_tok;
 			    System.out.println("qActUrl:"+qActUrl);
 			    String ret2[]=new HttpUtil().doGet("https://graph.facebook.com/v2.2/"+business_id+"/adaccounts?access_token="+access_tok,proxy,host,port);
 			   System.out.println("ret2:"+ret2[1]);
-			   //½âÎöadaccounts api
+			   //è§£æžadaccounts api
 			   Gson gson_act = new Gson();
 			   AdAccounts adaccounts = gson_act.fromJson(ret2[1],AdAccounts.class);
 			   adaccountsData = adaccounts.getData();
@@ -109,12 +109,12 @@ public class LoginController {
 		boolean hasErr = false;
 		FbAccount fbaccount = new FbAccount();
 		fbaccount.setAccess_token(ac);
-		// Ïògraph apiÇëÇó/me/businesses
+		// å‘graph apiè¯·æ±‚/me/businesses
 		String ret[] = new HttpUtil().doGet(
 				"https://graph.facebook.com/v2.2/me/businesses?access_token="
 						+ ac,false,"",0);
 		System.out.println(ret[1]);
-		// ¼ì²é×´Ì¬
+		// æ£€æŸ¥çŠ¶æ€
 		if (ret[0].equals("200")) {
 
 		} else {
@@ -162,7 +162,7 @@ public class LoginController {
 						fieldError.getDefaultMessage()));
 			}
 		}
-		// ²éÑ¯ÓÃ»§£¬Èç¹û´æÔÚ£¬ÔÙ¼ì²éÓÃ»§Ãû
+		// æŸ¥è¯¢ç”¨æˆ·ï¼Œå¦‚æžœå­˜åœ¨ï¼Œå†æ£€æŸ¥ç”¨æˆ·å
 		FmpUser fu = fmpuserDAO.findByFmpUserEmail(request
 				.getParameter("email"));
 		if (fu == null) {
