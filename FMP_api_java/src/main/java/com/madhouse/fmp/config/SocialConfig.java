@@ -41,11 +41,13 @@ public class SocialConfig implements SocialConfigurer{
 	//
 	// SocialConfigurer implementation methods
 	//
+	// 该回调方法用来允许应用添加需要支持的社交网络对应的连接工厂的实现
 	@Override
 	public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
 		cfConfig.addConnectionFactory(new FacebookConnectionFactory(env.getProperty("facebook.appKey"), env.getProperty("facebook.appSecret")));
 	}
 	
+	// getUserIdSource方法的实现中通过 Spring Security 来获取当前登录用户的信息
 	@Override
 	public UserIdSource getUserIdSource() {
 		return new UserIdSource() {			
@@ -60,6 +62,7 @@ public class SocialConfig implements SocialConfigurer{
 		};
 	}
 	
+	// getUsersConnectionRepository方法中创建了一个基于数据库的 JdbcUsersConnectionRepository 类的实现对象
 	@Override
 	public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
 		return new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
