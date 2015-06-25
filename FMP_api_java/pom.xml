@@ -8,13 +8,14 @@
   <name>FMP Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
-   <cglibVersion>2.2.2</cglibVersion>
+   <cglibVersion>2.2</cglibVersion>
   	<spring.version>4.0.1.RELEASE</spring.version>
   	<springSocialVersion>1.1.0.RELEASE</springSocialVersion>
   	<springSocialFacebookVersion>2.0.1.RELEASE</springSocialFacebookVersion>
   	<servletApiVersion>3.1.0</servletApiVersion>
   	<thymeleafVersion>2.1.2.RELEASE</thymeleafVersion>
   	<thymeleafLayoutVersion>1.2.2</thymeleafLayoutVersion>
+  	<javaxInjectVersion>1</javaxInjectVersion>
   </properties>
   <dependencies>
     <dependency>
@@ -43,9 +44,14 @@
 		</dependency>
 		<dependency>  
         <groupId>cglib</groupId>  
-        <artifactId>cglib</artifactId>  
+        <artifactId>cglib-nodep</artifactId>  
         <version>${cglibVersion}</version>  
     </dependency>  
+    <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>${javaxInjectVersion}</version>
+    </dependency>
     <!-- Servlet API, JSTL -->  
     <dependency>  
         <groupId>javax.servlet</groupId>  
