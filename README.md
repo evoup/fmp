@@ -1,4 +1,5 @@
 # fmp
+0.91php_backend版中，FMP_api_java为转任后研究的一个没有完成的javaapi，舍不得删除就放在那里，而再之前的FMP_api为初步实现到了spring4的一些小功能的java版api，初步提供了前端帐号读取的功能。
 
 tomcat7的配置server.xml中
 ```code
