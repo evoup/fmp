@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	<typeAliases>
+		<typeAlias alias="FacebookAccount"  type="com.madhouse.fmp.domain.FacebookAccount"/>
+		<typeAlias alias="FmpAccountInfo" type="com.madhouse.fmp.domain.FmpAccountInfo"/>
+		<typeAlias alias="Account" type="com.madhouse.fmp.domain.Account"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="mappers/FacebookAccount.xml" />
+		<mapper resource="mappers/FmpAccountInfo.xml" />
+		<mapper resource="mappers/Account.xml" />
+	</mappers>
+</configuration>	

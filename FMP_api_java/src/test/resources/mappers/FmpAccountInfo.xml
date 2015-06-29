@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.madhouse.fmp.domain.FmpAccountInfo">
+
+	<resultMap type="FmpAccountInfo" autoMapping="true" id="FmpAccountInfoResult">
+	</resultMap>
+	
+	<insert id="save" parameterType="FmpAccountInfo">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		INSERT INTO fmp_account_info (performad_account_id, performad_account_name, facebook_user_id, facebook_user_name, access_token, update_time, profile_url, image_url, expire_time, expire_time)
+		VALUES(#{performadAccountId}, #{performadAccountName}, #{facebookUserId}, #{facebookUserName}, #{accessToken}, #{updateTime}, #{profileUrl}, #{imageUrl}, #{expireTime})
+	</insert>
+	
+	<select id="getRecordByUserName" parameterType="java.lang.String" resultMap="FmpAccountInfoResult">
+		select * from fmp_account_info where performad_account_name = #{userName}
+	</select>
+
+</mapper>
+
+
