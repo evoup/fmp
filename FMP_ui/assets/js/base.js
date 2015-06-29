@@ -12,12 +12,12 @@ $(document).ajaxComplete(function(event, xhr, settings) {
      * TODO如果是本方API调用才会检查返回状态
      */
     //console.log(settings.type)
-    console.log(settings.url)
+    //console.log(settings.url)
     try {
         login_status=(xhr.responseJSON).status
         // 请求API出现400或者明文出现status为false，则为没有登录，跳转到未登录页
         if (xhr.status===400 || login_status==="false" || login_status===false) {
-            console.log("redirect")
+            //console.log("redirect")
             if (settings.url===baseConf.api_prefix+"/get/login/@self"){
               // 登录页不跳转
             } else if(settings.url===baseConf.api_prefix+"/get/fb_graph/@self") {
