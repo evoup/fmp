@@ -126,7 +126,7 @@ class Api {
 
     $params_ref->enhance($params);
     $params_ref['access_token'] = $this->getSession()->getAccessToken();
-    $params_ref['appsecret_proof'] = $this->getSession()->getAppSecretProof();
+    //$params_ref['appsecret_proof'] = $this->getSession()->getAppSecretProof();
 
     return $request;
   }
