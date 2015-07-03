@@ -73,49 +73,49 @@ $task_content=json_encode(array(
     'adsets'=>$_POST['commit_data']
 ));
 
-// 检查是否有正在发布中的任务，如果有超过指定数目未发布(目前为3个)的任务，则无法再发布
-$status_ready=__TASKSTAT_READY;
-$check_task_query=<<<EOT
-SELECT count(*) FROM `t_fmp_task`
-    WHERE `fmp_user_id`={$fmp_uid} AND `status`={$status_ready};
-EOT;
-include(dirname(__FILE__).'/../inc/conn.php');
-if ($result=$link->query($check_task_query)) {
-    $row=mysqli_fetch_assoc($result);
-    $max_ready_nums=$row['count(*)'];
-    if($max_ready_nums>__FMP_MAX_READY_PUBLISH_TASKS) {
-        echo "reach max ready publish task nums!\n";
-    } 
-}
+//// 检查是否有正在发布中的任务，如果有超过指定数目未发布(目前为3个)的任务，则无法再发布
+//$status_ready=__TASKSTAT_READY;
+//$check_task_query=<<<EOT
+//SELECT count(*) FROM `t_fmp_task`
+    //WHERE `fmp_user_id`={$fmp_uid} AND `status`={$status_ready};
+//EOT;
+//include(dirname(__FILE__).'/../inc/conn.php');
+//if ($result=$link->query($check_task_query)) {
+    //$row=mysqli_fetch_assoc($result);
+    //$max_ready_nums=$row['count(*)'];
+    //if($max_ready_nums>__FMP_MAX_READY_PUBLISH_TASKS) {
+        //echo "reach max ready publish task nums!\n";
+    //} 
+//}
 
-$insert_task_query=<<<EOT
-INSERT INTO `t_fmp_task`(fmp_user_id,type,status,content) 
-    VALUES({$fmp_uid},{$task_type},{$task_status},'{$task_content}');
-EOT;
-echo $insert_task_query;
-$task_id=null;
-if ($link->query($insert_task_query)) {
-    $task_id=$link->insert_id;
-} else {
-    addLog(__FMP_LOGTYPE_ERROR,array('run query error'=>$insert_task_query));
-} 
-@mysqli_close($link);
-// 队列生产者，写一个任务
-require __API_ROOT.'/GPLlib/predis-1.0/autoload.php';
-$queue_server = array(
-    'host'     => __REDIS_HOST,
-    'port'     => __REDIS_PORT,
-    'database' => __REDIS_DB_INDEX
-);
-$redis_client = new Predis\Client($queue_server + array('read_write_timeout' => 0));
-$queue_content=json_encode(array(
-    'task_id'=>$task_id,
-    'task_type'=>$task_type,
-    'task_content'=>json_decode($task_content)
-));
-$redis_client->lpush(__REDIS_QUEUE_NAME,$queue_content);
-echo "done";
-die;
+//$insert_task_query=<<<EOT
+//INSERT INTO `t_fmp_task`(fmp_user_id,type,status,content) 
+    //VALUES({$fmp_uid},{$task_type},{$task_status},'{$task_content}');
+//EOT;
+//echo $insert_task_query;
+//$task_id=null;
+//if ($link->query($insert_task_query)) {
+    //$task_id=$link->insert_id;
+//} else {
+    //addLog(__FMP_LOGTYPE_ERROR,array('run query error'=>$insert_task_query));
+//} 
+//@mysqli_close($link);
+//// 队列生产者，写一个任务
+//require __API_ROOT.'/GPLlib/predis-1.0/autoload.php';
+//$queue_server = array(
+    //'host'     => __REDIS_HOST,
+    //'port'     => __REDIS_PORT,
+    //'database' => __REDIS_DB_INDEX
+//);
+//$redis_client = new Predis\Client($queue_server + array('read_write_timeout' => 0));
+//$queue_content=json_encode(array(
+    //'task_id'=>$task_id,
+    //'task_type'=>$task_type,
+    //'task_content'=>json_decode($task_content)
+//));
+//$redis_client->lpush(__REDIS_QUEUE_NAME,$queue_content);
+//echo "done";
+//die;
 
 $child_attachments=null;
 switch($_SESSION[__SESSION_CAMP_EDIT]['step1']['objective']) {
@@ -152,10 +152,11 @@ case (__OBJT_MULTI_PRODUCT):
 // The ObjectStorySpec helps bring some order to a complex
 // API spec that assists with creating page posts inline.
 
+$page_id=$_SESSION[__SESSION_CAMP_EDIT]['step5']['selected_page'];
 @$object_story_spec = array(
   ObjectStorySpecFields::PAGE_ID => $page_id,
   ObjectStorySpecFields::LINK_DATA => array(
-    LinkDataFields::MESSAGE => $_SESSION[__SESSION_CAMP_EDIT]['step5']['message'],
+    LinkDataFields::MESSAGE => $_SESSION[__SESSION_CAMP_EDIT]['step5']['messages'],
     LinkDataFields::LINK => $_SESSION[__SESSION_CAMP_EDIT]['step5']['link'],
     LinkDataFields::CAPTION => $_SESSION[__SESSION_CAMP_EDIT]['step5']['link'],
     LinkDataFields::CHILD_ATTACHMENTS => $child_attachments
@@ -209,7 +210,7 @@ foreach($_POST['commit_data'] as $cdInfo) {
     @$adset->setData(array(
         AdSetFields::NAME => $cdInfo['ad_set_name'],
         AdSetFields::CAMPAIGN_GROUP_ID => $campaign_id,
-        AdSetFields::CAMPAIGN_STATUS => AdSet::STATUS_ACTIVE,
+        AdSetFields::CAMPAIGN_STATUS => AdSet::STATUS_PAUSED,
         AdSetFields::DAILY_BUDGET => $_SESSION[__SESSION_CAMP_EDIT]['step4']['budget']*100,
         AdSetFields::TARGETING => $targeting,
         AdSetFields::BID_TYPE => BidTypes::BID_TYPE_CPM,
@@ -227,7 +228,7 @@ foreach($_POST['commit_data'] as $cdInfo) {
     echo "adset_id:{$adset_id}";
     echo "creative_id:{$creative_id}";
     $adgroup = new AdGroup(null, $account_id);
-    $adgroup->{AdGroupFields::ADGROUP_STATUS} = AdGroup::STATUS_ACTIVE;
+    $adgroup->{AdGroupFields::ADGROUP_STATUS} = AdGroup::STATUS_PAUSED;
     //$adgroup->{AdGroupFields::NAME} = 'test adgroup';
     $adgroup->{AdGroupFields::NAME} = $cdInfo['ad_set_name'];
     $adgroup->{AdGroupFields::CAMPAIGN_ID}=$adset_id;
